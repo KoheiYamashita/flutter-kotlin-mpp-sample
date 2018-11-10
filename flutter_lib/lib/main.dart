@@ -7,11 +7,32 @@ const platform = const MethodChannel('info.kitproject.flutterkotlin');
 
 class CounterModel extends Model {
   int _counter = 0;
+  bool _loading = true;
+
+  CounterModel() {
+    load();
+  }
 
   int get counter => _counter;
 
+  bool get loading => _loading;
+
+  void load() async {
+    // delay 1 seconds
+    await new Future.delayed(new Duration(seconds: 1));
+    _counter = await platform.invokeMethod('load');
+    _loading = false;
+    notifyListeners();
+  }
+
   void increment() async {
-    _counter = await platform.invokeMethod('increment', _counter);
+    if (_loading) return;
+    _loading = true;
+    notifyListeners();
+    // delay 1 seconds
+    await new Future.delayed(new Duration(seconds: 1));
+    _counter = await platform.invokeMethod('increment');
+    _loading = false;
     notifyListeners();
   }
 }
@@ -24,8 +45,7 @@ Widget _widgetForRoute(String route) {
   switch (route) {
     case 'main':
       return ScopedModel<CounterModel>(
-          model: CounterModel(),
-          child: new MyApp());
+          model: CounterModel(), child: new MyApp());
     default:
       return Center(
         child: Text('Unknown route: $route', textDirection: TextDirection.ltr),
@@ -56,7 +76,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -67,17 +86,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new Text(
-              'You have pushed the button this many times:',
-            ),
+            Text("You have pushed the button this many times:"),
             ScopedModelDescendant<CounterModel>(
               builder: (context, child, model) {
                 return Text(
-                  model.counter.toString(),
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .display1,
+                  model.loading ? "loading" : model.counter.toString(),
+                  style: Theme.of(context).textTheme.display1,
                 );
               },
             ),

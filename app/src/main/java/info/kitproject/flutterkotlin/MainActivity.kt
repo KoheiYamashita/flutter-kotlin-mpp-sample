@@ -16,12 +16,12 @@ class MainActivity : AppCompatActivity() {
         val layout = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         setContentView(flutterView, layout)
-
+        val counter = Counter()
         MethodChannel(flutterView, channel).setMethodCallHandler { call, result ->
-            if (call.method == "increment") {
-                result.success(Counter().increment(call.arguments<Int>()))
-            } else {
-                result.notImplemented()
+            when {
+                call.method == "load" -> result.success(counter.load())
+                call.method == "increment" -> result.success(counter.increment())
+                else -> result.notImplemented()
             }
         }
     }
