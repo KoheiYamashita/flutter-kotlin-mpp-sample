@@ -1,6 +1,6 @@
 package info.kitproject.flutterkotlin.common
 
 expect class Counter {
-    fun load(): Int
-    fun increment(): Int
+    suspend fun load(): Long
+    suspend fun increment(): Long
 }

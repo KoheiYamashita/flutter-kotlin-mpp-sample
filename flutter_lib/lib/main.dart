@@ -18,8 +18,6 @@ class CounterModel extends Model {
   bool get loading => _loading;
 
   void load() async {
-    // delay 1 seconds
-    await new Future.delayed(new Duration(seconds: 1));
     _counter = await platform.invokeMethod('load');
     _loading = false;
     notifyListeners();
@@ -29,8 +27,6 @@ class CounterModel extends Model {
     if (_loading) return;
     _loading = true;
     notifyListeners();
-    // delay 1 seconds
-    await new Future.delayed(new Duration(seconds: 1));
     _counter = await platform.invokeMethod('increment');
     _loading = false;
     notifyListeners();

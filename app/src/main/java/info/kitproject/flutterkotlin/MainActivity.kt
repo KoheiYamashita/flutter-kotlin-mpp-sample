@@ -6,6 +6,8 @@ import android.widget.FrameLayout
 import info.kitproject.flutterkotlin.common.Counter
 import io.flutter.facade.Flutter
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val channel = "info.kitproject.flutterkotlin"
@@ -18,10 +20,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(flutterView, layout)
         val counter = Counter()
         MethodChannel(flutterView, channel).setMethodCallHandler { call, result ->
-            when {
-                call.method == "load" -> result.success(counter.load())
-                call.method == "increment" -> result.success(counter.increment())
-                else -> result.notImplemented()
+            GlobalScope.launch {
+                when {
+                    call.method == "load" -> result.success(counter.load())
+                    call.method == "increment" -> result.success(counter.increment())
+                    else -> result.notImplemented()
+                }
             }
         }
     }
