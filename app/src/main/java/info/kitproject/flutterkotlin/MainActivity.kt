@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         val layout = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         setContentView(flutterView, layout)
-        val counter = Counter()
+        val counter = Counter(applicationContext)
         MethodChannel(flutterView, channel).setMethodCallHandler { call, result ->
             when {
                 call.method == "load" -> result.success(counter.load())
