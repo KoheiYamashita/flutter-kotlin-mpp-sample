@@ -1,4 +1,4 @@
-# Sample project of Flutter + kotlin mpp
+# Sample project of Flutter + kotlin Multiplatform Project
 It is based on the counter application.
 
 - Base:[master](https://gitlab.com/KoheiYamashita/flutterKotlin/tree/master)
