@@ -1,6 +1,37 @@
+import 'dart:ui';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-void main() => runApp(new MyApp());
+const platform = const MethodChannel('info.kitproject.flutterkotlin');
+
+class CounterModel extends Model {
+  int _counter = 0;
+
+  int get counter => _counter;
+
+  void increment() async {
+    _counter = await platform.invokeMethod('increment', _counter);
+    notifyListeners();
+  }
+}
+
+void main() {
+  runApp(_widgetForRoute(window.defaultRouteName));
+}
+
+Widget _widgetForRoute(String route) {
+  switch (route) {
+    case 'main':
+      return ScopedModel<CounterModel>(
+          model: CounterModel(),
+          child: new MyApp());
+    default:
+      return Center(
+        child: Text('Unknown route: $route', textDirection: TextDirection.ltr),
+      );
+  }
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -43,18 +74,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,18 +111,29 @@ class _MyHomePageState extends State<MyHomePage> {
             new Text(
               'You have pushed the button this many times:',
             ),
-            new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            ScopedModelDescendant<CounterModel>(
+              builder: (context, child, model) {
+                return Text(
+                  model.counter.toString(),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .display1,
+                );
+              },
             ),
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: ScopedModelDescendant<CounterModel>(
+        builder: (context, child, model) {
+          return FloatingActionButton(
+            onPressed: model.increment,
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          );
+        },
+      ),
     );
   }
 }

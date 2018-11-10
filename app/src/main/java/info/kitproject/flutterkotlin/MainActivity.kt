@@ -3,9 +3,12 @@ package info.kitproject.flutterkotlin
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.FrameLayout
+import info.kitproject.flutterkotlin.common.Counter
 import io.flutter.facade.Flutter
+import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : AppCompatActivity() {
+    private val channel = "info.kitproject.flutterkotlin"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -13,5 +16,13 @@ class MainActivity : AppCompatActivity() {
         val layout = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         setContentView(flutterView, layout)
+
+        MethodChannel(flutterView, channel).setMethodCallHandler { call, result ->
+            if (call.method == "increment") {
+                result.success(Counter().increment(call.arguments<Int>()))
+            } else {
+                result.notImplemented()
+            }
+        }
     }
 }
