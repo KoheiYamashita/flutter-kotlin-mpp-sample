@@ -1,6 +1,7 @@
 # Sample project of Flutter + kotlin Multiplatform Project
-It is based on the counter application.
+- TODO:iOS build
 
+It is based on the counter application.
 - Base:[master](https://gitlab.com/KoheiYamashita/flutterKotlin/tree/master)
 - Use Firebase Realtime Database:[firebase-realtime-database](https://gitlab.com/KoheiYamashita/flutterKotlin/tree/firebase-realtime-database)
 - Use SQLite: [sqlite](https://gitlab.com/KoheiYamashita/flutterKotlin/tree/sqlite)
